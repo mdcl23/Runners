@@ -10,11 +10,17 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = Game
 TEMPLATE = app
-
+CONFIG += c++11
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    landscapewidget.cpp \
+    landscape.cpp \
+    world.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    landscapewidget.h \
+    landscape.h \
+    world.h
 
 FORMS    += mainwindow.ui
