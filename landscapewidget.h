@@ -24,6 +24,11 @@ private:
     QVector<QGraphicsRectItem*> tiles;
     QGraphicsScene* scene;
 
+    static const qreal tile_width;
+    static const qreal tile_height;
+protected:
+    virtual void mousePressEvent(QMouseEvent* event);
+
 };
 
 #endif // LANDSCAPEWIDGET_H
