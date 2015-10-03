@@ -14,6 +14,8 @@ public:
     explicit LandscapeWidget(QWidget *parent = 0);
     ~LandscapeWidget();
 
+    QPoint screenToWorld(QPoint screenPt) const;
+
 signals:
 
 public slots:
@@ -22,6 +24,7 @@ private:
     World world;
 
     QVector<QGraphicsRectItem*> tiles;
+    QGraphicsItem* playerItem;
     QGraphicsScene* scene;
 
     static const qreal tile_width;

@@ -30,6 +30,8 @@ LandscapeWidget::LandscapeWidget(QWidget *parent)
         }
     }
 
+    playerItem = scene->addEllipse(tile_width*10, tile_height*10, 20, 20, QColor(255, 255, 255), QColor(255, 255, 255));
+
     qDebug() << "scene ready";
     this->setScene(scene);
 }
@@ -39,14 +41,20 @@ LandscapeWidget::~LandscapeWidget()
     delete scene;
 }
 
+QPoint LandscapeWidget::screenToWorld(QPoint screenPt) const {
+    return QPoint{
+        int(screenPt.x()/LandscapeWidget::tile_width),
+        int(screenPt.y()/LandscapeWidget::tile_height) };
+}
+
 void LandscapeWidget::mousePressEvent(QMouseEvent *event)
 {
-    QPoint worldPt{
-        int(event->x()/LandscapeWidget::tile_width),
-        int(event->y()/LandscapeWidget::tile_height) };
+    QPoint worldPt = this->screenToWorld(event->pos());
 
     qDebug() << "mouse clicked: ("
              << worldPt.x() << ", "
              << worldPt.y() << ") = "
              << world.landscape.getTile(worldPt).type;
+
+    playerItem->setPos(worldPt*tile_width);
 }
