@@ -15,7 +15,7 @@ public:
         BRIDGE_TILE,
         ROCK_TILE,
     };
-    static const int TYPE_COUNT = 6; // number of tile types
+    static const int TYPE_COUNT = 7; // number of tile types
 
     Tile();
     Tile(Type type);
