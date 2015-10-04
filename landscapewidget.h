@@ -19,6 +19,8 @@ public:
     QPoint screenToWorld(QPoint screenPt) const;
     QPoint worldToScreen(QPoint worldPt) const;
 
+    qreal zoom;
+
 signals:
 
 public slots:
@@ -29,6 +31,9 @@ private:
     QVector<QGraphicsRectItem*> tiles;
     QGraphicsItem* playerItem;
     GameScene* scene;
+
+protected:
+    void keyReleaseEvent(QKeyEvent* event);
 
 };
 

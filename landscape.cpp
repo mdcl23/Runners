@@ -1,5 +1,7 @@
 #include "landscape.h"
 
+#include <cmath>
+
 // Tile class implementation
 
 Tile::Tile() : type(GRASS_TILE) {}
@@ -115,8 +117,27 @@ Landscape Landscape::createRandomLandscape(int width, int height)
     Landscape landscape(width, height);
     for (int yi = 0; yi < height; yi++) {
         for (int xi = 0; xi < width; xi++) {
+            landscape.setTile(xi, yi, Tile::GRASS_TILE);
+        }
+    }
+
+    int riverPosition = width/5 + qrand() % ((2*width)/5);
+    int riverAmplitude = width/10 + qrand() % (width/10);
+    double riverFreq = .5 + 2.*double(qrand() % 1000)/1000.;
+    int riverWidth = 2 + qrand() % 8;
+
+    for (int yi = 0; yi < height; yi++) {
+        for (int xi = 0; xi < width; xi++) {
             landscape.setTile(xi, yi, Tile::createRandom());
         }
     }
+
+    for (int yi=0; yi < height; yi++) {
+        int rp = riverPosition + riverAmplitude*sin(2*3.14*riverFreq*double(yi)/height);
+        for (int xi = 0; xi < riverWidth; xi++) {
+            landscape.setTile(xi+rp, yi, Tile::WATER_TILE);
+        }
+    }
+
     return landscape;
 }

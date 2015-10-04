@@ -30,7 +30,7 @@ public:
 
     // walkSpeed() returns how fast can a game entity
     // walk on the tile.
-    // -1 means the tile cannot be passed.
+    // 0 means the tile cannot be passed.
     int walkSpeed() const;
 
     // how the tile will be presented in the landscapeview

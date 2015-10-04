@@ -8,7 +8,6 @@
 #include "landscape.h"
 
 class GameScene : public QGraphicsScene {
-    Q_OBJECT
 
 public:
     // constants for tile sizes
@@ -27,7 +26,6 @@ public:
     QGraphicsItem* hover;
     QGraphicsItem* player;
 
-public slots:
     void movePlayer(QPoint worldPt);
 
 private:
@@ -59,7 +57,6 @@ GameScene::GameScene(const World& world)
 
 GameScene::~GameScene()
 {
-
 }
 
 void GameScene::addTile(QPoint worldPt, Tile tile)
@@ -135,7 +132,8 @@ void GameScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 
 LandscapeWidget::LandscapeWidget(QWidget *parent)
     : QGraphicsView(parent)
-    , world(QPoint(60, 40))
+    , zoom(1.0)
+    , world(QPoint(80, 60))
 {
     scene = new GameScene(world);
     scene->setMap(world.landscape);
@@ -149,4 +147,15 @@ LandscapeWidget::LandscapeWidget(QWidget *parent)
 LandscapeWidget::~LandscapeWidget()
 {
     delete scene;
+}
+
+void LandscapeWidget::keyReleaseEvent(QKeyEvent* event)
+{
+    if (event->key() == Qt::Key_Plus) {
+        zoom = 0.9;
+        this->scale(zoom, zoom);
+    } else if (event->key() == Qt::Key_Minus) {
+        zoom = 1.1;
+        this->scale(zoom, zoom);
+    }
 }
