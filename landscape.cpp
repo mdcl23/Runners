@@ -85,10 +85,11 @@ QVector<Tile> Landscape::getNeighbours(int x, int y) const
 
 QVector<Tile> Landscape::getNeighbours(const QPoint& p) const
 {
-    QPoint neighbour_pts[8]{
-        {-1, -1}, {0, -1}, {1, -1},
-        {-1, 0}, {1, 0},
-        {-1, 1}, {0, 1}, {1, 1}
+    QPoint neighbour_pts[8] =
+    {
+        QPoint(-1, -1), QPoint(0, -1), QPoint(1, -1),
+        QPoint(-1, 0), QPoint(1, 0),
+        QPoint(-1, 1), QPoint(0, 1), QPoint(1, 1)
     };
 
     QVector<Tile> ns;
