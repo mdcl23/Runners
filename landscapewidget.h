@@ -7,6 +7,8 @@
 #include <QGraphicsRectItem>
 #include "World.h"
 
+class GameScene;
+
 class LandscapeWidget : public QGraphicsView
 {
     Q_OBJECT
@@ -15,6 +17,7 @@ public:
     ~LandscapeWidget();
 
     QPoint screenToWorld(QPoint screenPt) const;
+    QPoint worldToScreen(QPoint worldPt) const;
 
 signals:
 
@@ -25,12 +28,7 @@ private:
 
     QVector<QGraphicsRectItem*> tiles;
     QGraphicsItem* playerItem;
-    QGraphicsScene* scene;
-
-    static const qreal tile_width;
-    static const qreal tile_height;
-protected:
-    virtual void mousePressEvent(QMouseEvent* event);
+    GameScene* scene;
 
 };
 
