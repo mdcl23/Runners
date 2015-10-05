@@ -63,7 +63,7 @@ void GameScene::addTile(QPoint worldPt, Tile tile)
 {
     this->addRect(tile_width*worldPt.x(), tile_height*worldPt.y(),
                   tile_width, tile_height,
-                  QPen(),
+                  QColor(0,0,0,64),
                   tile.brush());
 }
 
