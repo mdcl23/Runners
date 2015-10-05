@@ -3,6 +3,7 @@
 
 #include <QVector>
 #include <QBrush>
+#include <QMap>
 
 class Tile {
 public:
@@ -26,6 +27,9 @@ public:
     // createRandom() can be used to create a random
     // tile with uniform probability for all tiles.
     static Tile createRandom();
+
+    // this randomizes a tile with a given distribution
+    static Tile createRandom(const QMap<Tile::Type, double>& probDist);
 
 
     // walkSpeed() returns how fast can a game entity
