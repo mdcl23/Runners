@@ -16,11 +16,13 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     landscapewidget.cpp \
     landscape.cpp \
-    world.cpp
+    world.cpp \
+    gamescene.cpp
 
 HEADERS  += mainwindow.h \
     landscapewidget.h \
     landscape.h \
-    world.h
+    world.h \
+    gamescene.h
 
 FORMS    += mainwindow.ui
