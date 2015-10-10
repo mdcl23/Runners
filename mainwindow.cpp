@@ -5,11 +5,18 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(0)//new Ui::MainWindow)
 {
-    ui->setupUi(this);
     this->landscape = new LandscapeWidget();
-    ui->verticalLayout->addWidget(landscape);
+    this->setCentralWidget(landscape);
+
+    /*ui->setupUi(this);
+    this->landscape = new LandscapeWidget();
+    landscape->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::MinimumExpanding);
+    ui->centralWidget->layout()->addWidget(landscape);
+    ui->centralWidget->layout()->setMargin(0);
+    //ui->verticalLayout->setDirection();
+    */
 }
 
 MainWindow::~MainWindow()
