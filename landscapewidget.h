@@ -3,7 +3,8 @@
 
 #include <QGraphicsView>
 #include "World.h"
-#include "gamescene.h"
+
+class GameScene;
 
 class LandscapeWidget : public QGraphicsView
 {

@@ -65,12 +65,12 @@ QBrush Tile::brush() const
     switch (type)
     {
     case NONE_TILE: return QColor(0,0,0);
-    case GRASS_TILE: return QColor("green");
-    case SAND_TILE: return QColor(96, 64, 0);
+    case GRASS_TILE: return QColor(24, 140, 24);
+    case SAND_TILE: return QColor(142, 136, 0);
     case ROAD_TILE: return QBrush(QColor("black"), Qt::DiagCrossPattern);
-    case WATER_TILE: return QColor("darkBlue");
-    case BRIDGE_TILE: return QColor("yellow");
-    case ROCK_TILE: return QColor(56, 56, 56);
+    case WATER_TILE: return QColor(64, 64, 214);
+    case BRIDGE_TILE: return QColor(146, 96, 0);
+    case ROCK_TILE: return QColor(100, 110, 112);
     }
 
 }
@@ -149,7 +149,7 @@ Landscape Landscape::createRandomLandscape(int width, int height)
     int riverAmplitude = width/10 + qrand() % (width/10);
     double riverFreq = .5 + 2.*double(qrand() % 1000)/1000.;
     double riverPhase = 2*3.14*double(qrand() % 1000)/1000.;
-    int riverWidth = 2 + qrand() % 8;
+    int riverWidth = 2 + qrand() % 20;
 
     int bridge1Pos = qrand() % (height/2);
     int bridge2Pos = height - qrand() % (height/2);

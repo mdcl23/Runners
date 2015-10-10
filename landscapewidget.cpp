@@ -5,6 +5,7 @@
 #include <QKeyEvent>
 
 #include "landscape.h"
+#include "gamescene.h"
 
 // LandscapeWidget
 
