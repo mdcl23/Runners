@@ -59,6 +59,11 @@ public:
     QVector<Tile> getNeighbours(const QPoint& p) const;
     QVector<Tile> getNeighbours(int x, int y) const;
 
+    QPoint indexToCoords(int offs) const;
+    int coordsToIndex(QPoint coords) const;
+
+    QVector<QPoint> getPath(QPoint start, QPoint end) const;
+
     static Landscape createRandomLandscape(int width, int height);
 };
 

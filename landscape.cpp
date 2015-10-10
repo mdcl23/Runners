@@ -3,6 +3,10 @@
 #include <cmath>
 #include <QDebug>
 
+#include <iostream>
+
+#include "dijkstra.h"
+
 // Tile class implementation
 
 Tile::Tile() : type(GRASS_TILE) {}
@@ -136,6 +140,52 @@ QVector<Tile> Landscape::getNeighbours(const QPoint& p) const
     return ns;
 }
 
+int Landscape::coordsToIndex(QPoint coords) const{
+    return coords.y()*width + coords.x();
+}
+
+QPoint Landscape::indexToCoords(int offs) const {
+    int yi = offs / width;
+    int xi = offs - yi*width;
+    return QPoint(xi, yi);
+}
+
+QVector<QPoint> Landscape::getPath(QPoint start, QPoint end) const
+{
+    std::vector<weight_t> min_distance;
+    std::vector<vertex_t> previous;
+
+    adjacency_list_t adj = make_graph(*this);
+    DijkstraComputePaths(this->coordsToIndex(start), adj, min_distance, previous);
+    std::list<vertex_t> path = DijkstraGetShortestPathTo(this->coordsToIndex(end), previous);
+
+    if (min_distance[this->coordsToIndex(end)] > 2000000) {
+        qDebug() << "no way to get there!";
+        return QVector<QPoint>();
+    }
+
+    std::copy(path.begin(), path.end(), std::ostream_iterator<vertex_t>(std::cout, " "));
+    std::cout << std::endl;
+
+    QVector<QPoint> retPath;
+    foreach(vertex_t vx, path) {
+        retPath.append(this->indexToCoords(vx));
+    }
+    return retPath;
+}
+
+namespace {
+    int countTiles(QVector<Tile> tiles, Tile::Type ttype) {
+        int count = 0;
+        foreach (Tile t, tiles) {
+            if (t.type == ttype) {
+                count++;
+            }
+        }
+        return count;
+    }
+}
+
 Landscape Landscape::createRandomLandscape(int width, int height)
 {
     Landscape landscape(width, height);
@@ -170,6 +220,22 @@ Landscape Landscape::createRandomLandscape(int width, int height)
             landscape.setTile(xi, yi, t);
         }
     }
+
+    // smooth water
+    /*for (int yi = 0; yi < height; yi++) {
+        for (int xi = 0; xi < width; xi++) {
+            Tile current = landcape.getTile(xi, yi);
+            auto ns = landscape.getNeighbours(xi, yi);
+            int waterNeighbourCount = countTiles(ns, Tile::WATER_TILE);
+            if (Tile.type == Tile::WATER_TILE &&
+                qrand() % 100 > waterNeighbourCount*2)
+            {
+                // with 10 percent probability, generate a 'lake'
+
+            }
+        }
+    }
+    */
 
     // smooth rocks and mountains and water
     for(int yi = 0; yi < height; yi++) {

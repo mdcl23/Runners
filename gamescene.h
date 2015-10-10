@@ -31,20 +31,22 @@ public:
     QGraphicsItem* hover;
     QGraphicsItem* player;
 
-    void movePlayer(QPoint worldPt, double speed);
-
 public slots:
     void refreshAnimations();
+    void showPath(QVector<QPoint> newPath);
 
 signals:
      // emitted when animated item arrives at certain point
     void playerArrivedAt(QPoint worldPt);
+    void tileClicked(QPoint worldPt);
 
 private:
 
     // variables to handle movement animation
     QTimer animTicker;
     QList<MoveAnim*> moves; // this will store animations of moves
+
+    QVector<QGraphicsItem*> pathItems;
 
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);

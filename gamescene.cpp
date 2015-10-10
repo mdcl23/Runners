@@ -1,36 +1,36 @@
 #include "gamescene.h"
 
+#include <cmath>
 #include <QSet>
 #include <QDebug>
 #include <QGraphicsSceneMouseEvent>
 
 // helper for move animations
-class MoveAnim {
+class MoveAnim
+{
 public:
-    MoveAnim(QGraphicsItem* target, QPoint destination, QPoint worldDestination, double speed)
-        : finished(false)
-        , target(target)
-        , time(0)
-        , speed(speed)
-        , delta(speed*(destination-target->scenePos()))
-        , worldDestination(worldDestination)
-    {
-    }
+    MoveAnim(QPoint start, QPoint end)
+        : start(start)
+        , end(end)
+        , currentPos(start)
+        , finished(false)
+    {}
+
+    QPointF start;
+    QPointF end;
+    QPointF currentPos;
 
     bool finished;
-    QGraphicsItem* target;
-    double time; // 0 to 1
-    double speed;
 
-    QPointF delta;
-    QPoint worldDestination;
+    QGraphicsItem* line;
 
-    void advance() {
-        if (time >= 1.) {
+    void advance()
+    {
+        QPointF unit = (end - start)/sqrt(QPointF::dotProduct(end - start, end - start));
+        currentPos += 2.*unit;
+
+        if ((currentPos - end).manhattanLength() < 2.) {
             finished = true;
-        } else {
-            target->setPos(target->scenePos() + delta);
-            time += speed;
         }
     }
 };
@@ -53,9 +53,10 @@ GameScene::GameScene(const World& world)
                                QColor(255, 0, 0),
                                QColor(128, 32, 32));
     player->setZValue(99);
-    this->movePlayer(world.playerPosition, 0.05);
+    this->player->setPos(worldToScreen(world.playerPosition));
 
     animTicker.setInterval(30);
+    animTicker.start();
     connect(&animTicker, SIGNAL(timeout()), this, SLOT(refreshAnimations()));
 }
 
@@ -82,14 +83,32 @@ void GameScene::setMap(const Landscape& lc)
     }
 }
 
-void GameScene::movePlayer(QPoint worldPt, double speed)
+void GameScene::showPath(QVector<QPoint> newPath)
 {
-    if (moves.empty())
-    {
-        animTicker.start();
+    foreach(QGraphicsItem* i, pathItems) {
+        this->removeItem(i);
+    }
+    pathItems.clear();
+
+    if (!moves.empty()) {
+        player->setPos(moves.front()->start);
+        moves.clear();
     }
 
-    moves.append(new MoveAnim(player, this->worldToScreen(worldPt), worldPt, speed));
+    qDebug() << "!";
+    QPoint prev = newPath.front();
+    newPath.pop_front();
+
+    const QPoint offs(tile_width/2, tile_height/2);
+    foreach(QPoint cs, newPath) {
+        QPoint start = worldToScreen(prev);
+        QPoint end = worldToScreen(cs);
+
+        pathItems.append(this->addLine(QLineF(start + offs, end + offs), QPen(QColor("black"))));
+        prev = cs;
+        moves.append(new MoveAnim(start, end));
+        moves.back()->line = pathItems.back();
+    }
 }
 
 QPoint GameScene::screenToWorld(QPoint screenPt) const
@@ -110,22 +129,15 @@ QPoint GameScene::worldToScreen(QPoint worldPt) const
 
 void GameScene::refreshAnimations()
 {
-    QSet<QGraphicsItem*> movedItems;
-    QMutableListIterator<MoveAnim*> it(moves);
-    while (it.hasNext())
-    {
-        MoveAnim* anim = it.next();
-        if (anim->finished) {
-            it.remove();
-            emit playerArrivedAt(anim->worldDestination);
-            delete anim;
-        } else if (!movedItems.contains(anim->target)) {
-            anim->advance();
-        }
-    }
+    if (moves.empty()) return;
 
-    if (moves.empty()) {
-        animTicker.stop();
+    moves.front()->advance();
+    player->setPos(moves[0]->currentPos.toPoint());
+
+    if (moves.front()->finished) {
+        this->removeItem(moves.front()->line);
+        emit playerArrivedAt(screenToWorld(moves.front()->end.toPoint()));
+        moves.pop_front();
     }
 }
 
@@ -133,9 +145,9 @@ void GameScene::refreshAnimations()
 
 void GameScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    qDebug() << "mpress " << event->scenePos();
     QPoint worldPos(screenToWorld(event->scenePos().toPoint()));
-    this->movePlayer(worldPos, 0.05);
+
+    emit tileClicked(worldPos);
 
     QGraphicsScene::mousePressEvent(event);
 }
@@ -144,13 +156,6 @@ void GameScene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
     QPoint worldPos(this->screenToWorld(event->scenePos().toPoint()));
     QPoint hoverPos(this->worldToScreen(worldPos));
-
-    static int d = 0;
-    if (!((d++) % 10)) {
-        qDebug() << "scene: " << event->scenePos();
-        qDebug() << "tile:" << worldPos;
-        qDebug() << "hover: " << hoverPos;
-    }
 
     hover->setPos(hoverPos);
 

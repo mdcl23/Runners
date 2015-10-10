@@ -21,6 +21,10 @@ LandscapeWidget::LandscapeWidget(QWidget *parent)
     this->setMouseTracking(true); // activate mouse tracking for landscapewidget,
                                   // otherwise scene does not get mouse events
                                   // without a button press
+
+    connect(&world, SIGNAL(pathCreated(QVector<QPoint>)), scene, SLOT(showPath(QVector<QPoint>)));
+    connect(scene, SIGNAL(tileClicked(QPoint)), &world, SLOT(movePlayer(QPoint)));
+    connect(scene, SIGNAL(playerArrivedAt(QPoint)), &world, SLOT(movementStopped(QPoint)));
 }
 
 LandscapeWidget::~LandscapeWidget()

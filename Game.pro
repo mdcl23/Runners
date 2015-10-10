@@ -17,12 +17,14 @@ SOURCES += main.cpp\
     landscapewidget.cpp \
     landscape.cpp \
     world.cpp \
-    gamescene.cpp
+    gamescene.cpp \
+    dijkstra.cpp
 
 HEADERS  += mainwindow.h \
     landscapewidget.h \
     landscape.h \
     world.h \
-    gamescene.h
+    gamescene.h \
+    dijkstra.h
 
 FORMS    += mainwindow.ui
