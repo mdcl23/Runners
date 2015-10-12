@@ -5,6 +5,8 @@
 #include <QSet>
 #include <QStack>
 
+#include <qDebug>
+
 HexGame::HexGame(int size)
     : board(new Piece[size*size])
     , size(size)
@@ -38,6 +40,15 @@ void HexGame::setPiece(QPoint cs, HexGame::Piece piece)
     if (QRect(0, 0, size, size).contains(cs))
     {
         board[cs.x() + cs.y()*size]  = piece;
+
+        qDebug() << "++";
+        for (int yi = 0; yi < size; yi++) {
+            QString s;
+            for (int xi = 0; xi < size; xi++) {
+                s += (this->getPiece(xi, yi) == BlackPiece) ? "X" : (this->getPiece(xi, yi) == WhitePiece) ? "O" : " ";
+            }
+            qDebug() << s;
+        }
     }
 }
 
@@ -79,6 +90,8 @@ HexGame::Piece HexGame::checkWin() const
         testPt(*this, QPoint(size-1, i), borderPts);
     }
 
+    qDebug() << "border: " << borderPts.size();
+
     QRect boardRect(0,0,size,size);
     QMapIterator<Piece, QSet<QPoint>> ptsIter(borderPts);
     while (ptsIter.hasNext())
@@ -99,8 +112,8 @@ HexGame::Piece HexGame::checkWin() const
                 if (this->getPiece(current) != plr)
                     continue;
 
-                if (abs(startPt.x() - current.x()) == size ||
-                    abs(startPt.y() - current.y()) == size)
+                if (abs(startPt.x() - current.x()) == size-1 ||
+                    abs(startPt.y() - current.y()) == size-1)
                 {
                     return plr;
                 }

@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     world.cpp \
     gamescene.cpp \
     dijkstra.cpp \
-    hexgame.cpp
+    hexgame.cpp \
+    hexscene.cpp
 
 HEADERS  += mainwindow.h \
     landscapewidget.h \
@@ -27,6 +28,7 @@ HEADERS  += mainwindow.h \
     world.h \
     gamescene.h \
     dijkstra.h \
-    hexgame.h
+    hexgame.h \
+    hexscene.h
 
 FORMS    += mainwindow.ui
