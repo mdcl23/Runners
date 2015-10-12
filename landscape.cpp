@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <QDebug>
+#include <QTime>
 
 #include <iostream>
 
@@ -188,6 +189,8 @@ namespace {
 
 Landscape Landscape::createRandomLandscape(int width, int height)
 {
+    qsrand(QTime::currentTime().msec());
+
     Landscape landscape(width, height);
     for (int yi = 0; yi < height; yi++) {
         for (int xi = 0; xi < width; xi++) {
@@ -196,8 +199,8 @@ Landscape Landscape::createRandomLandscape(int width, int height)
     }
 
     int riverPosition = width/5 + qrand() % ((2*width)/5);
-    int riverAmplitude = width/10 + qrand() % (width/10);
-    double riverFreq = .5 + 2.*double(qrand() % 1000)/1000.;
+    int riverAmplitude = 4 + qrand() % (width/20);
+    double riverFreq = .1 + 1.2*double(qrand() % 1000)/1000.;
     double riverPhase = 2*3.14*double(qrand() % 1000)/1000.;
     int riverWidth = 2 + qrand() % 20;
 
