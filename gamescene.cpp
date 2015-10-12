@@ -22,12 +22,16 @@ public:
 
     bool finished;
 
-    QGraphicsItem* line;
+    QGraphicsLineItem* line;
 
     void advance()
     {
         QPointF unit = (end - start)/sqrt(QPointF::dotProduct(end - start, end - start));
         currentPos += 2.*unit;
+
+        QLineF l = line->line();
+        l.setP1(currentPos + QPoint(GameScene::tile_width/2, GameScene::tile_height/2));
+        line->setLine(l);
 
         if ((currentPos - end).manhattanLength() < 2.) {
             finished = true;

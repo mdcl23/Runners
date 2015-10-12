@@ -46,7 +46,7 @@ private:
     QTimer animTicker;
     QList<MoveAnim*> moves; // this will store animations of moves
 
-    QVector<QGraphicsItem*> pathItems;
+    QVector<QGraphicsLineItem*> pathItems;
 
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent* event);
