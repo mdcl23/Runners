@@ -3,6 +3,7 @@
 #include <cmath>
 #include <QDebug>
 #include <QTime>
+#include <QStack>
 
 #include <iostream>
 
@@ -224,21 +225,62 @@ Landscape Landscape::createRandomLandscape(int width, int height)
         }
     }
 
+    QVector<QPoint> dirs;
+    dirs.append(QPoint(-1, -1));
+    dirs.append(QPoint( 0, -1));
+    dirs.append(QPoint( 1, -1));
+    dirs.append(QPoint( 1,  0));
+    dirs.append(QPoint(-1,  1));
+    dirs.append(QPoint( 0,  1));
+    dirs.append(QPoint( 1,  1));
+    dirs.append(QPoint(-1,  0));
+
+    QVector<QPoint> visited;
+
     // smooth water
-    /*for (int yi = 0; yi < height; yi++) {
+    for (int yi = 0; yi < height; yi++) {
         for (int xi = 0; xi < width; xi++) {
-            Tile current = landcape.getTile(xi, yi);
+            if (visited.contains(QPoint(xi, yi))) continue;
+
+            Tile current = landscape.getTile(xi, yi);
+
             auto ns = landscape.getNeighbours(xi, yi);
             int waterNeighbourCount = countTiles(ns, Tile::WATER_TILE);
-            if (Tile.type == Tile::WATER_TILE &&
-                qrand() % 100 > waterNeighbourCount*2)
-            {
-                // with 10 percent probability, generate a 'lake'
 
+            if (current.type == Tile::WATER_TILE) {
+                if (qrand() % 100 > (1+waterNeighbourCount*3))
+                {
+                    int amount = (1 + qrand() % 3)*(1+waterNeighbourCount);
+
+                    QStack<QPoint> cursors;
+                    cursors.push(QPoint(xi, yi));
+
+                    while (amount > 0)
+                    {
+                        if (cursors.empty()) break;
+
+                        QPoint c = cursors.pop();
+                        auto c1 = c + dirs[qrand() % 8];
+                        auto c2 = c + dirs[qrand() % 8];
+
+                        cursors.push(c1);
+                        landscape.setTile(c1, Tile::WATER_TILE);
+                        visited.push_back(c1);
+
+                        cursors.push(c2);
+                        landscape.setTile(c2, Tile::WATER_TILE);
+                        visited.push_back(c2);
+
+                        amount--;
+                    }
+                }
+                else
+                {
+                    landscape.setTile(xi, yi, Tile::GRASS_TILE);
+                }
             }
         }
     }
-    */
 
     // smooth rocks and mountains and water
     for(int yi = 0; yi < height; yi++) {
