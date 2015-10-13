@@ -97,7 +97,10 @@ Tile Landscape::getTile(const QPoint &p) const
 
 Tile Landscape::getTile(int x, int y) const
 {
-    return this->tiles[y*width + x];
+    if (x >= 0 && y >= 0 && x < width && y < height) {
+        return this->tiles[y*width + x];
+    }
+    return Tile::NONE_TILE;
 }
 
 void Landscape::setTile(const QPoint &p, Tile tile)
@@ -107,7 +110,9 @@ void Landscape::setTile(const QPoint &p, Tile tile)
 
 void Landscape::setTile(int x, int y, Tile tile)
 {
-    this->tiles[y*width + x] = tile;
+    if (x >= 0 && y >= 0 && x < width && y < height) {
+        this->tiles[y*width + x] = tile;
+    }
 }
 
 QVector<Tile> Landscape::getNeighbours(int x, int y) const
@@ -186,6 +191,21 @@ namespace {
         }
         return count;
     }
+
+    QPoint randomDirection(QPoint c)
+    {
+        QVector<QPoint> dirs;
+        dirs.append(QPoint(-1, -1));
+        dirs.append(QPoint( 0, -1));
+        dirs.append(QPoint( 1, -1));
+        dirs.append(QPoint( 1,  0));
+        dirs.append(QPoint(-1,  1));
+        dirs.append(QPoint( 0,  1));
+        dirs.append(QPoint( 1,  1));
+        dirs.append(QPoint(-1,  0));
+
+        return c + dirs[qrand() % 8];
+    }
 }
 
 Landscape Landscape::createRandomLandscape(int width, int height)
@@ -225,16 +245,6 @@ Landscape Landscape::createRandomLandscape(int width, int height)
         }
     }
 
-    QVector<QPoint> dirs;
-    dirs.append(QPoint(-1, -1));
-    dirs.append(QPoint( 0, -1));
-    dirs.append(QPoint( 1, -1));
-    dirs.append(QPoint( 1,  0));
-    dirs.append(QPoint(-1,  1));
-    dirs.append(QPoint( 0,  1));
-    dirs.append(QPoint( 1,  1));
-    dirs.append(QPoint(-1,  0));
-
     QVector<QPoint> visited;
 
     // smooth water
@@ -260,8 +270,8 @@ Landscape Landscape::createRandomLandscape(int width, int height)
                         if (cursors.empty()) break;
 
                         QPoint c = cursors.pop();
-                        auto c1 = c + dirs[qrand() % 8];
-                        auto c2 = c + dirs[qrand() % 8];
+                        auto c1 = randomDirection(c);
+                        auto c2 = randomDirection(c);
 
                         cursors.push(c1);
                         landscape.setTile(c1, Tile::WATER_TILE);
