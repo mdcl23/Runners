@@ -16,6 +16,9 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+public slots:
+    void startTetrix();
+
 private:
     Ui::MainWindow *ui;
     LandscapeWidget* landscape;

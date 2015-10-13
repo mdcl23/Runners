@@ -30,6 +30,7 @@ public:
 
     QGraphicsItem* hover;
     QGraphicsItem* player;
+    QGraphicsItem* portal;
 
     void clearPath();
 
@@ -41,6 +42,7 @@ signals:
      // emitted when animated item arrives at certain point
     void playerArrivedAt(QPoint worldPt);
     void tileClicked(QPoint worldPt);
+    void playerCollidesWithPortal();
 
 private:
 

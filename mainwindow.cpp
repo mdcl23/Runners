@@ -5,6 +5,9 @@
 #include <QGraphicsWidget>
 #include "hexscene.h"
 
+#include "gamescene.h"
+#include "tetrixwindow.h"
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(0)//new Ui::MainWindow)
@@ -23,9 +26,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->centralWidget->layout()->setMargin(0);
     //ui->verticalLayout->setDirection();
     */
+
+    connect(landscape->scene, SIGNAL(playerCollidesWithPortal()), this, SLOT(startTetrix()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::startTetrix()
+{
+    this->setCentralWidget(new TetrixWindow());
 }

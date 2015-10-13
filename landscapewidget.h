@@ -30,6 +30,8 @@ private:
 
     QVector<QGraphicsRectItem*> tiles;
     QGraphicsItem* playerItem;
+
+public:
     GameScene* scene;
 
 protected:

@@ -5,8 +5,6 @@
 #include <QDebug>
 #include <QGraphicsSceneMouseEvent>
 
-#include "portal.h"
-
 // helper for move animations
 class MoveAnim
 {
@@ -46,6 +44,7 @@ const qreal GameScene::tile_height = 20;
 
 GameScene::GameScene(const World& world)
     : animTicker()
+    , portal(new QGraphicsPixmapItem(QPixmap(":/portal.png")))
 {
     hover = this->addRect(0, 0,
                           tile_width, tile_height,
@@ -65,7 +64,6 @@ GameScene::GameScene(const World& world)
     animTicker.start();
     connect(&animTicker, SIGNAL(timeout()), this, SLOT(refreshAnimations()));
 
-    QGraphicsItem* portal = new QGraphicsPixmapItem(QPixmap(":/portal.png"));
     portal->setPos(worldToScreen(QPoint(world.landscape.width - 22,
                                         world.landscape.height - 18)));
     portal->setZValue(50);
@@ -161,10 +159,16 @@ void GameScene::refreshAnimations()
         pathItems.removeAll(moves.front()->line);
         delete moves.front()->line;
 
-        emit playerArrivedAt(screenToWorld(moves.front()->end.toPoint()));
+        QPoint arrivalPt = screenToWorld(moves.front()->end.toPoint());
+        emit playerArrivedAt(arrivalPt);
+
 
         delete moves.front();
         moves.pop_front();
+
+        if (player->collidesWithItem(portal)) {
+            emit playerCollidesWithPortal();
+        }
     }
 }
 
