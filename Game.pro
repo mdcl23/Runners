@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui widgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -22,7 +22,10 @@ SOURCES += main.cpp\
     hexgame.cpp \
     hexscene.cpp \
     hexbrain.cpp \
-    hexutils.cpp
+    hexutils.cpp \
+    tetrixboard.cpp \
+    tetrixpiece.cpp \
+    tetrixwindow.cpp
 
 HEADERS  += mainwindow.h \
     landscapewidget.h \
@@ -33,6 +36,9 @@ HEADERS  += mainwindow.h \
     hexgame.h \
     hexscene.h \
     hexbrain.h \
-    hexutils.h
+    hexutils.h \
+    tetrixboard.h \
+    tetrixpiece.h \
+    tetrixwindow.h
 
 FORMS    += mainwindow.ui

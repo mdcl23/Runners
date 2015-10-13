@@ -49,15 +49,28 @@ void LandscapeWidget::keyReleaseEvent(QKeyEvent* event)
 
 namespace {
 
-static QGraphicsView* hexWidgetPtr;
+static QWidget* hexWidgetPtr;
 
 void createHexWidget(QWidget* parent)
 {
-    QGraphicsView* hexWidget = new QGraphicsView(parent);
+    QWidget* bgWidget = new QWidget(parent);
+    bgWidget->setStyleSheet("background-color: rgba(128, 128, 128, 75%)");
+    bgWidget->setGeometry(
+        0, 0,
+        parent->width(), parent->height()
+    );
+    bgWidget->show();
+
+    QGraphicsView* hexWidget = new QGraphicsView(bgWidget);
+    hexWidget->setObjectName("hexgame");
     hexWidget->setScene(new HexScene(10));
     hexWidget->show();
+    hexWidget->move(
+        (bgWidget->width() - hexWidget->width())/2,
+        (bgWidget->height() - hexWidget->height())/2);
 
-    hexWidgetPtr = hexWidget;
+
+    hexWidgetPtr = bgWidget;
 
     QObject::connect(hexWidget->scene(), SIGNAL(playerWins()), parent, SLOT(playerWonHex()));
     QObject::connect(hexWidget->scene(), SIGNAL(computerWins()), parent, SLOT(computerWonHex()));
@@ -65,12 +78,13 @@ void createHexWidget(QWidget* parent)
 
 void destroyHexWidget()
 {
-    HexScene* hs = dynamic_cast<HexScene*>(hexWidgetPtr->scene());
+    QGraphicsView* hexW = hexWidgetPtr->findChild<QGraphicsView*>("hexgame");
+    HexScene* hs = dynamic_cast<HexScene*>(hexW->scene());
 
     QObject::disconnect(hs, SIGNAL(playerWins()), hexWidgetPtr->parent(), SLOT(playerWonHex()));
     QObject::disconnect(hs, SIGNAL(computerWins()), hexWidgetPtr->parent(), SLOT(computerWonHex()));
 
-    hexWidgetPtr->setScene(0);
+    hexW->setScene(0);
   //  delete hs;
 
     hexWidgetPtr->hide();

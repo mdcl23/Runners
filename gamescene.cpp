@@ -89,12 +89,13 @@ void GameScene::setMap(const Landscape& lc)
 
 void GameScene::clearPath()
 {
-    while (moves.count() > 1){
+    while (moves.count() > 1) {
         moves.pop_back();
     }
-    foreach(QGraphicsItem* i, pathItems) {
-        this->removeItem(i);
-        delete i;
+
+    foreach(QGraphicsItem* i, pathItems)
+    {
+        i->setVisible(false);
     }
     pathItems.clear();
 }
