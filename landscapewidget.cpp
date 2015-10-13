@@ -1,7 +1,6 @@
 #include "landscapewidget.h"
 
 #include <QGraphicsRectItem>
-#include <QDebug>
 #include <QKeyEvent>
 
 #include "landscape.h"
@@ -106,15 +105,12 @@ void LandscapeWidget::checkForBridge(QPoint worldPt)
 
 void LandscapeWidget::playerWonHex()
 {
-    qDebug() << "YOU WIN";
-
     destroyHexWidget();
     world.hasCrossedBridge = true;
 }
 
 void LandscapeWidget::computerWonHex()
 {
-    qDebug() << "computer WIN";
     destroyHexWidget();
 
     for (int yi = -1; yi < 2; yi++)

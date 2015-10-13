@@ -1,7 +1,6 @@
 #include "landscape.h"
 
 #include <cmath>
-#include <QDebug>
 #include <QTime>
 #include <QStack>
 
@@ -167,12 +166,8 @@ QVector<QPoint> Landscape::getPath(QPoint start, QPoint end) const
     std::list<vertex_t> path = DijkstraGetShortestPathTo(this->coordsToIndex(end), previous);
 
     if (min_distance[this->coordsToIndex(end)] > 2000000) {
-        qDebug() << "no way to get there!";
         return QVector<QPoint>();
     }
-
-    std::copy(path.begin(), path.end(), std::ostream_iterator<vertex_t>(std::cout, " "));
-    std::cout << std::endl;
 
     QVector<QPoint> retPath;
     foreach(vertex_t vx, path) {
@@ -238,9 +233,6 @@ Landscape Landscape::createRandomLandscape(int width, int height)
     for (int yi = 0; yi < height; yi++) {
         for (int xi = 0; xi < width; xi++) {
             Tile t = Tile::createRandom(landscapeDist);
-            if (t.type == Tile::NONE_TILE) {
-                qDebug() << "FOOOOO";
-            }
             landscape.setTile(xi, yi, t);
         }
     }

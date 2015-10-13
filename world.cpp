@@ -1,7 +1,5 @@
 #include "world.h"
 
-#include <QDebug>
-
 World::World(QPoint size)
     : landscape(Landscape::createRandomLandscape(size.x(), size.y()))
     , playerPosition(10,20)

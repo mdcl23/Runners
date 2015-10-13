@@ -2,7 +2,6 @@
 
 #include <cmath>
 #include <QSet>
-#include <QDebug>
 #include <QGraphicsSceneMouseEvent>
 
 // helper for move animations
@@ -115,7 +114,6 @@ void GameScene::showPath(QVector<QPoint> newPath)
 
     this->clearPath();
 
-    qDebug() << "!";
     QPoint prev = newPath.front();
     newPath.pop_front();
 
