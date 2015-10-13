@@ -187,7 +187,7 @@ adjacency_list_t make_graph(Landscape landscape)
 
     }
 
-    print_neighbour(adjacency_list, cnt);
+    //print_neighbour(adjacency_list, cnt);
 
     return adjacency_list;
 

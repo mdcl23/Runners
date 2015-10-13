@@ -42,3 +42,9 @@ HEADERS  += mainwindow.h \
     tetrixwindow.h
 
 FORMS    += mainwindow.ui
+
+DISTFILES += \
+    portal.png
+
+RESOURCES += \
+    runner-resources.qrc

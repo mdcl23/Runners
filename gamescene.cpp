@@ -5,6 +5,8 @@
 #include <QDebug>
 #include <QGraphicsSceneMouseEvent>
 
+#include "portal.h"
+
 // helper for move animations
 class MoveAnim
 {
@@ -62,6 +64,13 @@ GameScene::GameScene(const World& world)
     animTicker.setInterval(10);
     animTicker.start();
     connect(&animTicker, SIGNAL(timeout()), this, SLOT(refreshAnimations()));
+
+    QGraphicsItem* portal = new QGraphicsPixmapItem(QPixmap(":/portal.png"));
+    portal->setPos(worldToScreen(QPoint(world.landscape.width - 22,
+                                        world.landscape.height - 18)));
+    portal->setZValue(50);
+    this->addItem(portal);
+
 }
 
 GameScene::~GameScene()

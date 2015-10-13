@@ -8,7 +8,5 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    test_dijkstra();
-
     return a.exec();
 }
