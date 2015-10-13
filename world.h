@@ -19,6 +19,8 @@ public:
 
     QVector<QPoint> playerPath;
 
+    bool hasCrossedBridge;
+
 signals:
     void addWaypoint(QPoint coords);
     void pathCreated(QVector<QPoint>);

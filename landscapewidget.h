@@ -21,6 +21,9 @@ public:
 signals:
 
 public slots:
+    void checkForBridge(QPoint);
+    void playerWonHex();
+    void computerWonHex();
 
 private:
     World world;

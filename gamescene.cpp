@@ -87,17 +87,25 @@ void GameScene::setMap(const Landscape& lc)
     }
 }
 
-void GameScene::showPath(QVector<QPoint> newPath)
+void GameScene::clearPath()
 {
+    while (moves.count() > 1){
+        moves.pop_back();
+    }
     foreach(QGraphicsItem* i, pathItems) {
         this->removeItem(i);
+        delete i;
     }
     pathItems.clear();
+}
 
+void GameScene::showPath(QVector<QPoint> newPath)
+{
     if (!moves.empty()) {
         player->setPos(moves.front()->start);
-        moves.clear();
     }
+
+    this->clearPath();
 
     qDebug() << "!";
     QPoint prev = newPath.front();
@@ -140,7 +148,12 @@ void GameScene::refreshAnimations()
 
     if (moves.front()->finished) {
         this->removeItem(moves.front()->line);
+        pathItems.removeAll(moves.front()->line);
+        delete moves.front()->line;
+
         emit playerArrivedAt(screenToWorld(moves.front()->end.toPoint()));
+
+        delete moves.front();
         moves.pop_front();
     }
 }

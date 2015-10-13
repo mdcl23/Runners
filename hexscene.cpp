@@ -35,20 +35,31 @@ void HexScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     QPoint tilePos = worldToScreen(worldPos);
     QRect tile = QRect(tilePos, QSize(tile_width, tile_height));
 
-    if ((event->buttons() | Qt::LeftButton) &&
-        game.getPiece(worldPos) == HexGame::NonePiece)
+    if (event->buttons() | Qt::LeftButton)
     {
-        if (blackTurn)
+        if (game.getPiece(worldPos) == HexGame::NonePiece)
         {
-            game.setPiece(worldPos, HexGame::BlackPiece);
-            pieces.append(this->addRect(tile, QColor(0,0,0), QColor(0,0,0)));
-        } else {
-            game.setPiece(worldPos, HexGame::WhitePiece);
-            pieces.append(this->addRect(tile, QColor(0,0,0), QColor(255, 255, 255)));
-        }
+            if (blackTurn)
+            {
+                game.setPiece(worldPos, HexGame::BlackPiece);
+                pieces.append(this->addRect(tile, QColor(0,0,0), QColor(0,0,0)));
+            } else {
+                game.setPiece(worldPos, HexGame::WhitePiece);
+                pieces.append(this->addRect(tile, QColor(0,0,0), QColor(255, 255, 255)));
+            }
 
-        blackTurn = !blackTurn;
+            blackTurn = !blackTurn;
+        } else {
+            qDebug() << "p: " << game.getPiece(worldPos);
+        }
     }
 
-    qDebug() << game.checkWin();
+    if (game.checkWin() == HexGame::BlackPiece)
+    {
+        emit playerWins();
+    }
+    else if (game.checkWin() == HexGame::WhitePiece)
+    {
+        emit computerWins();
+    }
 }

@@ -79,8 +79,6 @@ void HexGame::setPiece(QPoint cs, HexGame::Piece piece)
     {
         board[cs.x() + cs.y()*size]  = piece;
     }
-
-    debugBoard(*this);
 }
 
 uint qHash(const QPoint& pt)

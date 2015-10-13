@@ -26,6 +26,8 @@ private:
     QPoint worldToScreen(QPoint pt) const;
 
 signals:
+    void playerWins();
+    void computerWins();
 
 public slots:
 };

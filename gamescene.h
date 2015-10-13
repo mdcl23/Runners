@@ -31,6 +31,8 @@ public:
     QGraphicsItem* hover;
     QGraphicsItem* player;
 
+    void clearPath();
+
 public slots:
     void refreshAnimations();
     void showPath(QVector<QPoint> newPath);

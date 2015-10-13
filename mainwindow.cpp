@@ -2,11 +2,17 @@
 #include "ui_mainwindow.h"
 
 #include <QBoxLayout>
+#include <QGraphicsWidget>
+#include "hexscene.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(0)//new Ui::MainWindow)
 {
+    //QGraphicsView* gw = new QGraphicsView();
+    //gw->setScene(new HexScene(10));
+    //gw->setMouseTracking(true);
+    //this->setCentralWidget(gw);
     this->landscape = new LandscapeWidget();
     this->setCentralWidget(landscape);
 
