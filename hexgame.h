@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QPoint>
 #include <QRect>
+#include <vector>
 
 class HexGame : QObject
 {
@@ -12,9 +13,10 @@ public:
     enum Piece { NonePiece = 0, BlackPiece, WhitePiece };
 
     HexGame(int size);
+    HexGame(const HexGame& game);
     ~HexGame();
 
-    Piece* board;
+    std::vector<Piece> board;
     int size;
 
     Piece getPiece(int x, int y) const;

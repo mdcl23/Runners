@@ -6,18 +6,24 @@
 #include <QStack>
 
 #include <qDebug>
+#include <iterator>
 
 HexGame::HexGame(int size)
-    : board(new Piece[size*size])
+    : board(size)
     , size(size)
 {
 
 }
 
+HexGame::HexGame(const HexGame& game)
+    : board(game.size)
+    , size(game.size)
+{
+    std::copy(std::begin(game.board), std::end(game.board), std::begin(this->board));
+}
+
 HexGame::~HexGame()
 {
-    delete board;
-    board = 0;
 }
 
 HexGame::Piece HexGame::getPiece(int x, int y) const
@@ -40,15 +46,6 @@ void HexGame::setPiece(QPoint cs, HexGame::Piece piece)
     if (QRect(0, 0, size, size).contains(cs))
     {
         board[cs.x() + cs.y()*size]  = piece;
-
-        qDebug() << "++";
-        for (int yi = 0; yi < size; yi++) {
-            QString s;
-            for (int xi = 0; xi < size; xi++) {
-                s += (this->getPiece(xi, yi) == BlackPiece) ? "X" : (this->getPiece(xi, yi) == WhitePiece) ? "O" : " ";
-            }
-            qDebug() << s;
-        }
     }
 }
 
@@ -58,6 +55,21 @@ uint qHash(const QPoint& pt)
 }
 
 namespace {
+void debugBoard(const HexGame& g) {
+    qDebug() << "++";
+    for (int yi = 0; yi < g.size; yi++) {
+        QString s;
+        for (int xi = 0; xi < g.size; xi++) {
+            s += (g.getPiece(xi, yi) == HexGame::BlackPiece)
+                ? "X"
+                : (g.getPiece(xi, yi) == HexGame::WhitePiece)
+                  ? "O"
+                  : " ";
+        }
+        qDebug() << s;
+    }
+}
+
     void testPt(const HexGame& game, QPoint pt, QMap<HexGame::Piece, QSet<QPoint>>& cases)
     {
         HexGame::Piece p(game.getPiece(pt));
@@ -89,8 +101,6 @@ HexGame::Piece HexGame::checkWin() const
         testPt(*this, QPoint(0, i),      borderPts);
         testPt(*this, QPoint(size-1, i), borderPts);
     }
-
-    qDebug() << "border: " << borderPts.size();
 
     QRect boardRect(0,0,size,size);
     QMapIterator<Piece, QSet<QPoint>> ptsIter(borderPts);
