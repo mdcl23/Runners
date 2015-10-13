@@ -2,6 +2,7 @@
 
 #include <qDebug>
 #include <QGraphicsSceneMouseEvent>
+#include <QKeyEvent>
 
 int HexScene::tile_width = 40;
 int HexScene::tile_height = 40;
@@ -61,5 +62,12 @@ void HexScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
     else if (game.checkWin() == HexGame::WhitePiece)
     {
         emit computerWins();
+    }
+}
+
+void HexScene::keyReleaseEvent(QKeyEvent* event)
+{
+    if (event->text() == "w") {
+        emit playerWins();
     }
 }

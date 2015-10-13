@@ -18,8 +18,7 @@ namespace {
             }
         }
 
-
-
+        return 1;
 
     }
 }
@@ -39,4 +38,6 @@ int HexBrain::score(const HexGame &game)
     // closest to left edge
 
     // hypothesis LeftRight
+
+    return 1;
 }

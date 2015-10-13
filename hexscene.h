@@ -15,6 +15,7 @@ public:
     HexScene(int size);
 
     void mouseReleaseEvent(QGraphicsSceneMouseEvent* event);
+    void keyReleaseEvent(QKeyEvent* event);
 
     QVector<QGraphicsRectItem*> pieces;
 
