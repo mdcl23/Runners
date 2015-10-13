@@ -8,11 +8,43 @@
 #include <qDebug>
 #include <iterator>
 
+#include "hexutils.h"
+
+namespace {
+
+void debugBoard(const HexGame& g) {
+    qDebug() << "++";
+    for (int yi = 0; yi < g.size; yi++) {
+        QString s;
+        for (int xi = 0; xi < g.size; xi++) {
+            s += (g.getPiece(xi, yi) == HexGame::BlackPiece)
+                ? "X"
+                : (g.getPiece(xi, yi) == HexGame::WhitePiece)
+                  ? "O"
+                  : " ";
+        }
+        qDebug() << s;
+    }
+}
+
+void testPt(const HexGame& game, QPoint pt, QMap<HexGame::Piece, QSet<QPoint>>& cases)
+{
+    HexGame::Piece p(game.getPiece(pt));
+    if (p != HexGame::NonePiece) {
+        cases[p].insert(pt);
+    }
+}
+
+} // anon namespace
+
+
 HexGame::HexGame(int size)
-    : board(size)
+    : board(size*size)
     , size(size)
 {
-
+    for (uint i = 0; i < board.size(); i++) {
+        board[i] = NonePiece;
+    }
 }
 
 HexGame::HexGame(const HexGame& game)
@@ -47,47 +79,13 @@ void HexGame::setPiece(QPoint cs, HexGame::Piece piece)
     {
         board[cs.x() + cs.y()*size]  = piece;
     }
+
+    debugBoard(*this);
 }
 
 uint qHash(const QPoint& pt)
 {
     return qHash(QString("%1:%2").arg(pt.x(), pt.y()));
-}
-
-namespace {
-void debugBoard(const HexGame& g) {
-    qDebug() << "++";
-    for (int yi = 0; yi < g.size; yi++) {
-        QString s;
-        for (int xi = 0; xi < g.size; xi++) {
-            s += (g.getPiece(xi, yi) == HexGame::BlackPiece)
-                ? "X"
-                : (g.getPiece(xi, yi) == HexGame::WhitePiece)
-                  ? "O"
-                  : " ";
-        }
-        qDebug() << s;
-    }
-}
-
-    void testPt(const HexGame& game, QPoint pt, QMap<HexGame::Piece, QSet<QPoint>>& cases)
-    {
-        HexGame::Piece p(game.getPiece(pt));
-        if (p != HexGame::NonePiece) {
-            cases[p].insert(pt);
-        }
-    }
-
-    QVector<QPoint> neighbours4(QPoint pt)
-    {
-        QVector<QPoint> ns;
-        for (int i = -1; i < 2; i += 2)
-        {
-            ns.append(pt + QPoint(i,0));
-            ns.append(pt + QPoint(0,i));
-        }
-        return ns;
-    }
 }
 
 HexGame::Piece HexGame::checkWin() const
