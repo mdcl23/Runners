@@ -2,6 +2,7 @@
 #include "hexutils.h"
 
 #include <QVector>
+#include <QDebug>
 
 namespace
 {
@@ -22,7 +23,19 @@ struct Template {
     bool canTranspose;
 
     uint size;
-    TemplatePiece templ[9];
+    TemplatePiece* templ;
+
+    Template()
+        : score(0), canReverse(false), canTranspose(false)
+        , size(1), templ(0)
+    {}
+
+    Template(int score, bool canReverse, bool canTranspose,
+             uint size, TemplatePiece* templ)
+        : score(score), canReverse(canReverse)
+        , canTranspose(canTranspose), size(size)
+        , templ(templ)
+    {}
 
     TemplatePiece getPiece(QPoint pt, bool rev, bool trans) const
     {
@@ -39,8 +52,6 @@ struct Template {
             return bPiece == color;
         } else if (tPiece == OtherT) {
             return (color != bPiece && bPiece != HexGame::NonePiece);
-            //return (color == HexGame::BlackPiece && bPiece == HexGame::WhitePiece) ||
-            //       (color == HexGame::WhitePiece && bPiece == HexGame::BlackPiece);
         } else if (tPiece == AnyT) {
             return true;
         }
@@ -95,21 +106,50 @@ struct Template {
 
 int score(const HexGame &game, HexGame::Piece color)
 {
+    TemplatePiece t11[4] = {
+        MatchT, NoneT,
+        NoneT, MatchT
+    };
+
+    TemplatePiece t2[4] = {
+                MatchT, MatchT,
+                MatchT, AnyT };
+
+    TemplatePiece t3[9] = {
+                AnyT, MatchT, MatchT,
+                AnyT, NoneT, NoneT,
+                AnyT, MatchT, MatchT };
+
+    TemplatePiece t33[9] = {
+                AnyT, MatchT, MatchT,
+                AnyT, OtherT, MatchT,
+                AnyT, MatchT, MatchT };
+
+    TemplatePiece t4[9] = {
+                AnyT, MatchT, AnyT,
+                AnyT, MatchT, AnyT,
+                AnyT, MatchT, AnyT };
+
+    TemplatePiece t5[4] = {
+        MatchT, MatchT,
+        MatchT, MatchT
+    };
+
+    TemplatePiece t6[9] = {
+        AnyT, OtherT, AnyT,
+        AnyT, MatchT, AnyT,
+        AnyT, OtherT, AnyT,
+    };
+
     QVector<Template> templates;
-    templates << Template {-10, true, false, 2,
-                           { MatchT, OtherT,
-                             OtherT, MatchT }}
-              << Template { 1, true, true, 2,
-                           { MatchT, MatchT,
-                             MatchT, AnyT }}
-              << Template { 3, true, true, 3,
-                           { AnyT, MatchT, MatchT,
-                             AnyT, NoneT, NoneT,
-                             AnyT, MatchT, MatchT }}
-              << Template { 7, false, true, 3,
-                           { AnyT, MatchT, AnyT,
-                             AnyT, MatchT, AnyT,
-                             AnyT, MatchT, AnyT }};
+    templates << Template( 2, true, true, 2, t2 )
+              << Template( 20, true, false, 2, t11 )
+              << Template( 6, true, true, 3, t3 )
+              << Template( 30, true, true, 3, t33 )
+              << Template( 12, false, true, 3, t4 )
+              << Template( -7, false, false, 2, t5 )
+              << Template( 10, false, true, 3, t6 );
+
 
     HexGame::Piece opposite = oppositeColor(color);
 
@@ -145,7 +185,13 @@ QVector<QPoint> candidatePts(const HexGame& game)
     return pts;
 }
 
-int minimax(const HexGame& game, uint depth, HexGame::Piece color) {
+int neg(int a) {
+    if (a == INT_MAX) return INT_MIN;
+    if (a == INT_MIN) return INT_MAX;
+    return -a;
+}
+
+int minimax(const HexGame& game, uint depth, HexGame::Piece color, int alpha, int beta) {
     // actually negamax
 
     HexGame::Piece didWin = game.checkWin();
@@ -159,26 +205,30 @@ int minimax(const HexGame& game, uint depth, HexGame::Piece color) {
     foreach (QPoint pt, candidatePts(game))
     {
         HexGame::Piece opponent = oppositeColor(color);
-
         HexGame g(game);
         g.setPiece(pt, opponent);
 
-        int score = minimax(g, depth-1, opponent);
+        int score = minimax(g, depth-1, opponent, neg(beta), neg(alpha));
+
+        if (score == INT_MAX) { // computer wins -> this is bad move ret int_min
+            return INT_MIN;
+        }
 
         if (score > maxScore)
         {
             maxScore = score;
             bestPt = pt;
+        }
 
-            static int dbg_i = 0;
-            if (((dbg_i++) % 20) == 0)
-                debugBoard(g);
+        alpha = qMax(alpha, score);
+        if (alpha > beta) {
+            qDebug() << "ab: " << pt;
+            qDebug() << "a: " << alpha << "> b: " << beta << "d: " << depth;
+            break;
         }
     }
 
-    if (maxScore == INT_MIN) maxScore = INT_MAX;
-    else if (maxScore == INT_MAX) maxScore = INT_MIN;
-    else maxScore = -maxScore;
+    maxScore = neg(maxScore);
 
     return maxScore;
 }
@@ -212,11 +262,16 @@ QPoint nextMove(const HexGame& game, HexGame::Piece color)
         HexGame g(game);
         g.setPiece(pt, color);
 
-        int score = minimax(g, 2, color);
+        int score = minimax(g, 3, color, INT_MIN, INT_MAX);
+
         if (score > maxScore) {
             maxScore = score;
             bestPt = pt;
         }
+    }
+
+    if (maxScore == INT_MIN) {
+        bestPt = QPoint(-1, -1);
     }
 
     return bestPt;

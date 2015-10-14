@@ -10,8 +10,8 @@ int HexScene::tile_width = 40;
 int HexScene::tile_height = 40;
 
 HexScene::HexScene(int size)
-    : game(size)
-    , blackTurn(true)
+    : blackTurn(true)
+    , game(size)
 {
     this->setBackgroundBrush(QColor(25, 126, 254));
 
@@ -40,25 +40,29 @@ void HexScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
 
     if (event->buttons() | Qt::LeftButton)
     {
-        if (game.getPiece(worldPos) == HexGame::NonePiece)
+        if (blackTurn)
         {
-            if (blackTurn)
+            if (game.getPiece(worldPos) == HexGame::NonePiece)
             {
                 game.setPiece(worldPos, HexGame::BlackPiece);
                 pieces.append(this->addRect(tile, QColor(0,0,0), QColor(0,0,0)));
-            } else {
+                blackTurn = false;
+
                 worldPos = HexBrain::nextMove(game, HexGame::WhitePiece);
-                qDebug() << worldPos;
-                tilePos = worldToScreen(worldPos);
-                tile = QRect(tilePos, QSize(tile_width, tile_height));
+                if (worldPos != QPoint(-1, -1)) {
+                    qDebug() << worldPos;
+                    tilePos = worldToScreen(worldPos);
+                    tile = QRect(tilePos, QSize(tile_width, tile_height));
 
-                game.setPiece(worldPos, HexGame::WhitePiece);
-                pieces.append(this->addRect(tile, QColor(0,0,0), QColor(255, 255, 255)));
+                    game.setPiece(worldPos, HexGame::WhitePiece);
+                    pieces.append(this->addRect(tile, QColor(0,0,0), QColor(255, 255, 255)));
+                    blackTurn = true;
+                } else {
+                    qDebug() << "computer resigns!";
+                    blackTurn = true;
+                    emit playerWins();
+                }
             }
-
-            blackTurn = !blackTurn;
-        } else {
-            qDebug() << "p: " << game.getPiece(worldPos);
         }
     }
 
