@@ -3,12 +3,11 @@
 
 #include "hexgame.h"
 
-class HexBrain
+namespace HexBrain
 {
-public:
-    HexBrain();
 
-    static int score(const HexGame& game);
-};
+QPoint nextMove(const HexGame& game, HexGame::Piece color);
+
+}
 
 #endif // HEXBRAIN_H

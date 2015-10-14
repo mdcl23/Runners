@@ -1,5 +1,7 @@
 #include "hexscene.h"
 
+#include "hexbrain.h"
+
 #include <qDebug>
 #include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
@@ -45,6 +47,11 @@ void HexScene::mouseReleaseEvent(QGraphicsSceneMouseEvent* event)
                 game.setPiece(worldPos, HexGame::BlackPiece);
                 pieces.append(this->addRect(tile, QColor(0,0,0), QColor(0,0,0)));
             } else {
+                worldPos = HexBrain::nextMove(game, HexGame::WhitePiece);
+                qDebug() << worldPos;
+                tilePos = worldToScreen(worldPos);
+                tile = QRect(tilePos, QSize(tile_width, tile_height));
+
                 game.setPiece(worldPos, HexGame::WhitePiece);
                 pieces.append(this->addRect(tile, QColor(0,0,0), QColor(255, 255, 255)));
             }

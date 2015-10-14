@@ -12,21 +12,6 @@
 
 namespace {
 
-void debugBoard(const HexGame& g) {
-    qDebug() << "++";
-    for (int yi = 0; yi < g.size; yi++) {
-        QString s;
-        for (int xi = 0; xi < g.size; xi++) {
-            s += (g.getPiece(xi, yi) == HexGame::BlackPiece)
-                ? "X"
-                : (g.getPiece(xi, yi) == HexGame::WhitePiece)
-                  ? "O"
-                  : " ";
-        }
-        qDebug() << s;
-    }
-}
-
 void testPt(const HexGame& game, QPoint pt, QMap<HexGame::Piece, QSet<QPoint>>& cases)
 {
     HexGame::Piece p(game.getPiece(pt));
@@ -48,7 +33,7 @@ HexGame::HexGame(int size)
 }
 
 HexGame::HexGame(const HexGame& game)
-    : board(game.size)
+    : board(game.size*game.size)
     , size(game.size)
 {
     std::copy(std::begin(game.board), std::end(game.board), std::begin(this->board));
@@ -60,7 +45,10 @@ HexGame::~HexGame()
 
 HexGame::Piece HexGame::getPiece(int x, int y) const
 {
-    return board[x + y*size];
+    if (x >= 0 && y >= 0 && x < size && y < size)
+        return board[x + y*size];
+    else
+        return NonePiece;
 }
 
 HexGame::Piece HexGame::getPiece(QPoint cs) const
@@ -79,11 +67,6 @@ void HexGame::setPiece(QPoint cs, HexGame::Piece piece)
     {
         board[cs.x() + cs.y()*size]  = piece;
     }
-}
-
-uint qHash(const QPoint& pt)
-{
-    return qHash(QString("%1:%2").arg(pt.x(), pt.y()));
 }
 
 HexGame::Piece HexGame::checkWin() const
