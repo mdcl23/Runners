@@ -137,6 +137,16 @@ HexGame::Piece HexGame::checkWin() const
         }
     }
 
-    return NonePiece;
+    for (int yi=0; yi < size; yi++)
+    {
+        for (int xi=0; xi < size; xi++)
+        {
+            if (this->getPiece(xi, yi) == HexGame::NonePiece) {
+                return HexGame::NonePiece;
+            }
+        }
+    }
+
+    return HexGame::WhitePiece;
 }
 
