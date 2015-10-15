@@ -221,9 +221,7 @@ int minimax(const HexGame& game, uint depth, HexGame::Piece color, int alpha, in
         }
 
         alpha = qMax(alpha, score);
-        if (alpha > beta) {
-            qDebug() << "ab: " << pt;
-            qDebug() << "a: " << alpha << "> b: " << beta << "d: " << depth;
+        if (alpha >= beta) {
             break;
         }
     }

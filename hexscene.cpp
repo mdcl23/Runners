@@ -80,5 +80,7 @@ void HexScene::keyReleaseEvent(QKeyEvent* event)
 {
     if (event->text() == "w") {
         emit playerWins();
+    } else if (event->text() == "r") {
+        emit computerWins();
     }
 }
